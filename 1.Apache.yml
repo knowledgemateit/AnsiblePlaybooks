@@ -1,5 +1,5 @@
 --- # Install http server and Deploy the Html File
--   hosts: master
+-   hosts: master3
     tasks: 
     - name: Install Apache Server
       yum:
