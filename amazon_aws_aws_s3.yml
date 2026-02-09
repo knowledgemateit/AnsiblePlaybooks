@@ -4,21 +4,30 @@
   connection: local
 
   vars:
-    s3_bucket_name: "your-unique-s3-bucket-name"
+    s3_bucket_name: "divija-devops-test-2026"  # Ensure this is globally unique
     aws_region: "us-east-1"
-    aws_access_key: "your_access_key"
-    aws_secret_key: "your_secret_key"
+    aws_access_key: "YOUR_ACCESS_KEY"
+    aws_secret_key: "YOUR_SECRET_KEY"
 
   tasks:
-    - name: Create S3 bucket
-      amazon.aws.aws_s3:
+    - name: Ensure S3 Bucket exists
+      amazon.aws.s3_bucket:
         name: "{{ s3_bucket_name }}"
-        mode: create
         region: "{{ aws_region }}"
         aws_access_key: "{{ aws_access_key }}"
         aws_secret_key: "{{ aws_secret_key }}"
+        state: present
+        # Practical additions for modern S3 standards:
+        public_access:
+          block_public_acls: yes
+          block_public_policy: yes
+          ignore_public_acls: yes
+          restrict_public_buckets: yes
       register: s3_result
 
-    - name: Display result
+    - name: Print bucket details
       debug:
-        var: s3_result
+        msg: 
+          - "Bucket Name: {{ s3_result.name }}"
+          - "Region: {{ aws_region }}"
+          - "Creation Date: {{ s3_result.creation_date | default('Already Existed') }}"
