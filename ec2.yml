@@ -1,7 +1,8 @@
----  #  yum install pip -y && pip install boto
+---
 - hosts: localhost
   connection: local
   gather_facts: False
+  
   vars:
     keypair: test123
     instance_type: t2.micro
@@ -11,16 +12,25 @@
     user_secret_key: "xxxxxxxxxxxxxxxx"
 
   tasks:
-    - name: startup new instance
-      ec2:
-         key_name: "{{ keypair }}"
-         instance_type: "{{ instance_type }}"
-         image: "{{ image }}"
-         wait: true
-         region: "{{ region }}"
-         aws_access_key: "{{ user_access_key }}"
-         aws_secret_key: "{{ user_secret_key }}"
-      register: ec2
-      
-    - debug:
-        var: ec2.instances[0].public_ip
+    - name: Ensure Python dependencies are installed
+      pip:
+        name: 
+          - boto3
+          - botocore
+        state: present
+
+    - name: Launch AWS EC2 Instance
+      amazon.aws.ec2_instance:
+        name: "devops-test-server"
+        key_name: "{{ keypair }}"
+        instance_type: "{{ instance_type }}"
+        image_id: "{{ image }}"
+        region: "{{ region }}"
+        aws_access_key: "{{ user_access_key }}"
+        aws_secret_key: "{{ user_secret_key }}"
+        wait: yes
+      register: ec2_result
+
+    - name: Display Public IP
+      debug:
+        msg: "Server is up! IP: {{ ec2_result.instances[0].public_ip }}"
