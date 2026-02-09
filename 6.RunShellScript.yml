@@ -1,7 +1,16 @@
 --- # Upload the Shell Script to Remote Host and Run it.
--  hosts: master
-   tasks: 
-   -  name: Run the program
+- hosts: master
+  tasks:
+    - name: Copy the script to the remote host
+      copy:
+        src: ./hostname.sh      # Path on your local machine
+        dest: /opt/hostname.sh  # Path on the master machine
+        mode: '0755'            # Important: gives execute permissions
+
+    - name: Run the program
       shell: /opt/hostname.sh
       register: result
-   -  debug: msg="stdout={{ result }}"
+
+    - name: Display the script output
+      debug: 
+        msg: "The output of the script is: {{ result.stdout }}"
