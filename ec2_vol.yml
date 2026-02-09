@@ -7,21 +7,33 @@
     region: us-east-1
     availability_zone: us-east-1a
     volume_size: 10
-    volume_type: gp2
+    volume_type: gp3  # gp3 is the modern, cost-effective choice over gp2
     aws_access_key: "your_access_key"
     aws_secret_key: "your_secret_key"
 
   tasks:
+    - name: Ensure Python AWS dependencies are installed
+      pip:
+        name: 
+          - boto3
+          - botocore
+        state: present
+
     - name: Create an EBS volume
-      ec2_vol:
+      amazon.aws.ec2_volume:
         region: "{{ region }}"
-        zone: "{{ availability_zone }}"
+        availability_zone: "{{ availability_zone }}"
         volume_type: "{{ volume_type }}"
-        volume_size: "{{ volume_size }}"
+        size: "{{ volume_size }}"
         aws_access_key: "{{ aws_access_key }}"
         aws_secret_key: "{{ aws_secret_key }}"
-      register: new_volume
+        state: present
+        tags:
+          Name: "DevOps-Disk-01"
+          Environment: Dev
+          CreatedBy: Ansible
+      register: ebs_result
 
-    - name: Show new volume details
+    - name: Display Volume ID
       debug:
-        var: new_volume
+        msg: "New Volume Created with ID: {{ ebs_result.volume_id }}"
