@@ -4,9 +4,9 @@
   gather_facts: False
   
   vars:
-    keypair: test123
+    keypair: rajavan
     instance_type: t2.micro
-    image: "ami-01fccab91b456acc2"
+    image: "ami-0b6c6ebed2801a5cb"
     region: us-east-1
     user_access_key: "xxxxxxxxxxxxxx"
     user_secret_key: "xxxxxxxxxxxxxxxx"
