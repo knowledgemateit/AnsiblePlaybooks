@@ -10,6 +10,19 @@
     aws_secret_key: "YOUR_SECRET_KEY"
 
   tasks:
+    - name: Install pip
+      yum:
+        name: pip
+        state: present
+        
+    - name: Ensure Python AWS dependencies are installed
+      pip:
+        name: 
+          - boto
+          - boto3
+          - botocore
+        state: present
+  
     - name: Ensure S3 Bucket exists
       amazon.aws.s3_bucket:
         name: "{{ s3_bucket_name }}"
