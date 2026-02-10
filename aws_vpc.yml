@@ -18,6 +18,3 @@
     - name: Display VPC ID
       debug:
         msg: "The newly created VPC ID is {{ vpc_output.vpc.id }}"
-
-    # Additional tasks would follow to create subnets, internet gateways, etc., 
-    # using modules like ec2_vpc_subnet, ec2_vpc_igw, and ec2_vpc_route_table.
